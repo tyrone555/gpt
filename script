@@ -1,0 +1,149 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Read the data from CSV file
+data = pd.read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data", header=None)
+data.columns = ["sepal_length", "sepal_width", "petal_length", "petal_width", "class"]
+
+# Show the first 5 rows of the data
+print(data.head())
+
+# Check for any missing values
+print(data.isnull().sum())
+
+# Generate summary statistics of the data
+print(data.describe())
+    def create_list_dict(data, keys):
+        """ Create a list of dictionaries from a CSV file """
+        list_of_dicts = []
+        for row in data:
+            dict_data = {keys[i]: row[i] for i in range(len(keys))}
+            list_of_dicts.append(dict_data)
+        return list_of_dicts
+
+    # Read CSV file into a list of dictionaries
+    with open('data.csv', mode='r') as file:
+        csv_reader = csv.reader(file)
+        keys = next(csv_reader)  # get the first row of keys
+        data = [row for row in csv_reader]
+        list_of_dicts = create_list_dict(data, keys)
+    
+    # Filter the list of dictionaries based on the specified date range
+    filtered_list = []
+    for dict_data in list_of_dicts:
+        date = dict_data['date']
+        if start_date <= date <= end_date:
+            filtered_list.append(dict_data)
+    
+    # Sort the filtered list by the specified key
+    sorted_list = sorted(filtered_list, key=lambda x: x[sort_key])
+    
+    # Create a new CSV file with the sorted and filtered data
+    with open('sorted_filtered_data.csv', mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(keys)
+        for dict_data in sorted_list:
+            writer.writerow([dict_data[key] for key in keys])
+    
+    print('Done')
+def generate_pairs(text):
+    """
+    Generates word pairs from given text.
+    """
+    # Split the text into individual words
+    words = text.split()
+    
+    # Check that we have at least two words
+    if len(words) < 2:
+        print("Error: Must have at least two words to generate pairs.")
+        return None
+    
+    # Generate pairs of words
+    pairs = []
+    for i in range(len(words) - 1):
+        pairs.append((words[i], words[i+1]))
+    
+    return pairs
+
+def build_markov_chain(pairs):
+    """
+    Builds a Markov chain dictionary from given word pairs.
+    """
+    # Initialize the Markov chain dictionary
+    markov_chain = {}
+    
+    # Iterate over the word pairs
+    for pair in pairs:
+        # Check if the first word is already in the dictionary
+        if pair[0] in markov_chain:
+            # If it is, add the second word to the list of words that follow the first word
+            markov_chain[pair[0]].append(pair[1])
+        else:
+            # If it isn't, add a new key-value pair for the first word and its following word
+            markov_chain[pair[0]] = [pair[1]]
+    
+    return markov_chain
+
+def generate_sentence(markov_chain, num_words):
+    """
+    Generates a sentence of given number of words using the given Markov chain dictionary.
+    """
+    # Choose a random starting word
+    current_word = random.choice(list(markov_chain.keys()))
+    
+    # Initialize the sentence with the starting word
+    sentence = [current_word]
+    
+    # Generate the rest of the sentence
+    for i in range(num_words - 1):
+        # Get the list of words that follow the current word
+        next_words = markov_chain[current_word]
+        
+        # Choose a random word from the list
+        next_word = random.choice(next_words)
+        
+        # Add the word to the sentence
+        sentence.append(next_word)
+        
+        # Update the current word
+        current_word = next_word
+    
+    # Join the words together into a sentence
+    sentence = ' '.join(sentence)
+    
+    # Capitalize the first letter of the sentence
+    sentence = sentence.capitalize()
+    
+    # Add a period at the end of the sentence
+    sentence += '.'
+    
+    return sentence
+        if image_name not in images_seen:
+            # Create a PIL Image object from the image bytes
+            img = Image.open(io.BytesIO(image_bytes))
+            # Resize the image to the desired size
+            img = img.resize((img_size, img_size))
+            # Convert the image to a numpy array
+            img_array = np.asarray(img)
+            # Add the image array and its label to the dataset
+            images.append(img_array)
+            labels.append(label)
+            # Add the image name to the list of seen images
+            images_seen.append(image_name)
+            
+    # Convert the images and labels to numpy arrays
+    images = np.array(images)
+    labels = np.array(labels)
+    
+    # Normalize the images
+    images = images / 255.0
+    
+    # Shuffle the dataset
+    idxs = np.arange(len(images))
+    np.random.shuffle(idxs)
+    images = images[idxs]
+    labels = labels[idxs]
+    
+    return images, labels
