@@ -147,3 +147,5 @@ def generate_sentence(markov_chain, num_words):
     labels = labels[idxs]
     
     return images, labels
+
+hello, GPT.
